@@ -10,7 +10,7 @@ interface BiotiaLogoProps {
 export function BiotiaLogo({ className }: BiotiaLogoProps) {
   return (
     <Image
-      src="/microscope-logo.png"
+      src="/microscope.png"
       alt="BiotIA Pro Logo"
       width={100}
       height={100}
