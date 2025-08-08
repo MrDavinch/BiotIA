@@ -19,31 +19,31 @@ export default function Dashboard() {
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
         <Card className="col-span-1 lg:col-span-2">
           <CardHeader>
-            <CardTitle className="font-headline text-2xl">Bienvenido, Dr. Reed</CardTitle>
+            <CardTitle className="font-headline text-2xl">Bienvenido, Lic NOMBRE</CardTitle>
             <CardDescription>
-              Aquí está un resumen de su actividad reciente en BiotIA.
+              Aquí tienes un resumen de tus últimas actividades en BiotIA!
             </CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-4">
              <Link href="/diagnostics">
                 <Card className="hover:border-primary transition-colors">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Subir Nueva Imagen</CardTitle>
+                        <CardTitle className="text-sm font-medium">Sube un nuevo Campo</CardTitle>
                         <PlusCircle className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-sm text-muted-foreground">Inicie un nuevo diagnóstico.</div>
+                        <div className="text-sm text-muted-foreground">Inicia un nuevo Análisis.</div>
                     </CardContent>
                 </Card>
             </Link>
             <Link href="/atlas">
                 <Card className="hover:border-primary transition-colors">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Consultar Atlas</CardTitle>
+                        <CardTitle className="text-sm font-medium">Consulta el Atlas</CardTitle>
                         <ScanSearch className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-sm text-muted-foreground">Explore la base de datos.</div>
+                        <div className="text-sm text-muted-foreground">Explora la base de datos de campos.</div>
                     </CardContent>
                 </Card>
             </Link>
@@ -52,7 +52,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Último Diagnóstico</CardTitle>
-            <CardDescription>Resultado de su última imagen analizada.</CardDescription>
+            <CardDescription>Resultado de tu última imagen analizada.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-2 text-center">
             <Image
@@ -63,7 +63,7 @@ export default function Dashboard() {
                 className="rounded-md"
                 data-ai-hint="microscope bacteria"
             />
-            <p className="font-semibold mt-2">Streptococcus pneumoniae</p>
+            <p className="font-semibold mt-2">Streptococcus pneumoniae CURSIVA</p>
             <p className="text-sm text-muted-foreground">Confianza: 92%</p>
           </CardContent>
           <CardFooter>
@@ -75,27 +75,27 @@ export default function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center">
             <div className="grid gap-2">
-              <CardTitle className="font-headline">Chatbot IA</CardTitle>
+              <CardTitle className="font-headline">Chatbot BiotIA</CardTitle>
               <CardDescription>
-                Haga preguntas y obtenga respuestas al instante.
+                Tienes preguntas de tinciones o Identificación al microscopio? Obten respuestas al instante!
               </CardDescription>
             </div>
             <Bot className="h-8 w-8 ml-auto text-primary" />
           </CardHeader>
           <CardContent>
             <div className=" p-3 bg-muted rounded-md text-sm text-muted-foreground">
-                "¿Cuáles son los criterios para diferenciar E. coli de Klebsiella en agar MacConkey?"
+                "¿Cuáles son los criterios para diferenciar E. coli de Klebsiella en Agar MacConkey?"
             </div>
           </CardContent>
           <CardFooter>
             <Button size="sm" className="w-full" asChild>
-              <Link href="/chatbot">Chatear con IA</Link>
+              <Link href="/chatbot">Chatear con BiotIA</Link>
             </Button>
           </CardFooter>
         </Card>
       </div>
       <div>
-        <h2 className="text-xl font-headline mb-4">Actividad de la Comunidad</h2>
+        <h2 className="text-xl font-headline mb-4">Comunidad de Analistas</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {communityFeedData.map((post) => (
             <Card key={post.id}>

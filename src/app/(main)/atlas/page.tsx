@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Card,
@@ -26,9 +26,23 @@ const categories = [
 ];
 
 export default function AtlasPage() {
+  const [activeTab, setActiveTab] = useState<string>('micologia');
   const [activeTheme, setActiveTheme] = useState<string>('theme-micologia');
+  const tabRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    const hash = window.location.hash.substring(1);
+    if (hash && categories.some(c => c.key === hash)) {
+      setActiveTab(hash);
+      const element = tabRefs.current[hash];
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, []);
 
   const handleTabChange = (value: string) => {
+    setActiveTab(value);
     setActiveTheme(`theme-${value}`);
   }
 
@@ -37,11 +51,11 @@ export default function AtlasPage() {
       <div className="mb-4">
         <h1 className="text-3xl font-bold font-headline">Atlas Educativo</h1>
         <p className="text-muted-foreground">
-          Explore el banco de imágenes y las guías visuales.
+          Explora el banco de imágenes y las guías visuales.
         </p>
       </div>
 
-      <Tabs defaultValue="micologia" className="w-full" onValueChange={handleTabChange}>
+      <Tabs value={activeTab} className="w-full" onValueChange={handleTabChange}>
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent dark:from-background to-transparent h-8 -bottom-4" />
           <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-2">
@@ -57,7 +71,7 @@ export default function AtlasPage() {
           "bg-[var(--theme-color-light)] dark:bg-[var(--theme-color-dark)]"
         )}>
           {categories.map(cat => (
-            <TabsContent key={cat.key} value={cat.key}>
+            <TabsContent key={cat.key} value={cat.key} id={cat.key} ref={el => tabRefs.current[cat.key] = el}>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {(atlasData[cat.key as Category] || []).map((item) => (
                   <Card key={item.id} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:scale-105">

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import * as React from 'react';
 import Link from 'next/link';
@@ -13,6 +13,7 @@ import {
   CircleUser,
   PanelLeft,
   LayoutDashboard,
+  ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,17 +28,36 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { BiotiaLogo } from '@/components/biotia-logo';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { atlasData } from '@/lib/data';
 
 const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
   { href: '/chatbot', label: 'Chatbot IA', icon: Bot },
   { href: '/diagnostics', label: 'Diagnóstico por Imagen', icon: ScanSearch },
-  { href: '/atlas', label: 'Atlas', icon: BookOpen },
+  // Atlas will be handled separately
   { href: '/community', label: 'Casos Compartidos', icon: Users },
+];
+
+const atlasCategories = [
+    { key: 'micologia', name: 'Micología' },
+    { key: 'parasitologia', name: 'Parasitología' },
+    { key: 'bacteriologia', name: 'Bacteriología' },
+    { key: 'hematologia', name: 'Hematología' },
+    { key: 'uroanalisis', name: 'Uroanálisis' },
+    { key: 'coproanalisis', name: 'Coproanálisis' },
+    { key: 'citologia-histologia', name: 'Citología / Histología' },
 ];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [isAtlasOpen, setIsAtlasOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (pathname.startsWith('/atlas')) {
+      setIsAtlasOpen(true);
+    }
+  }, [pathname]);
 
   const sidebarNav = (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -54,6 +74,38 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           {label}
         </Link>
       ))}
+      
+      <Collapsible open={isAtlasOpen} onOpenChange={setIsAtlasOpen}>
+        <CollapsibleTrigger asChild>
+           <div className={cn(
+                'flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary group hover:scale-105 hover:border hover:border-primary cursor-pointer',
+                 { 'bg-muted text-primary': pathname.startsWith('/atlas') }
+            )}>
+              <div className="flex items-center gap-3">
+                <BookOpen className="h-5 w-5 transition-transform duration-300 group-hover:rotate-[15deg]" />
+                Atlas
+              </div>
+              <ChevronDown className={cn("h-4 w-4 transition-transform", isAtlasOpen && "rotate-180")} />
+           </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="py-1 pl-8 space-y-1">
+            <Link href="/atlas"  className={cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-xs',
+                 { 'bg-muted text-primary': pathname === '/atlas' && !window.location.hash }
+              )}>
+                  Página Principal
+              </Link>
+            {atlasCategories.map(category => (
+              <Link key={category.key} href={`/atlas#${category.key}`} className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-xs",
+                 { 'bg-muted text-primary': pathname.includes(`/atlas#${category.key}`) }
+              )}>
+                {category.name}
+              </Link>
+            ))}
+        </CollapsibleContent>
+      </Collapsible>
+
     </nav>
   );
 

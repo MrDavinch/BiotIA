@@ -31,7 +31,7 @@ export default function SignupPage() {
         </div>
         <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
         <CardDescription>
-          Enter your information to create your BiotIA Pro account
+          Enter your information to create your BiotIA account
         </CardDescription>
       </CardHeader>
       <CardContent>
