@@ -1,3 +1,5 @@
+'use client';
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,8 +12,17 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { BiotiaLogo } from "@/components/biotia-logo"
+import { useRouter } from "next/navigation";
+import type { FormEvent } from "react";
 
 export default function SignupPage() {
+  const router = useRouter();
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    router.push('/');
+  }
+
   return (
     <Card className="mx-auto max-w-sm w-full">
        <CardHeader className="space-y-1 text-center flex flex-col items-center">
@@ -24,28 +35,30 @@ export default function SignupPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-            <div className="space-y-2">
-                <Label htmlFor="full-name">Full Name</Label>
-                <Input id="full-name" placeholder="Dr. Jane Doe" required />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" required />
-            </div>
-            <Button type="submit" className="w-full">
-                Create an account
-            </Button>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+              <div className="space-y-2">
+                  <Label htmlFor="full-name">Full Name</Label>
+                  <Input id="full-name" placeholder="Dr. Jane Doe" required />
+              </div>
+              <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  />
+              </div>
+              <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input id="password" type="password" required />
+              </div>
+              <Button type="submit" className="w-full">
+                  Create an account
+              </Button>
+          </div>
+        </form>
         <div className="mt-4 text-center text-sm">
           Already have an account?{" "}
           <Link href="/login" className="underline">
