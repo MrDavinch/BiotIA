@@ -1,7 +1,6 @@
 'use client';
 
 import { cn } from "@/lib/utils";
-import Image from 'next/image';
 
 interface BiotiaLogoProps {
   className?: string;
@@ -10,12 +9,24 @@ interface BiotiaLogoProps {
 export function BiotiaLogo({ className }: BiotiaLogoProps) {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100 100"
-      className={cn("fill-current", className)}
-      aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={cn("text-primary", className)}
+        aria-hidden="true"
     >
-      <path d="M50,10A40,40,0,1,0,90,50,40,40,0,0,0,50,10ZM73.2,65.6a2,2,0,0,1-2.8,0l-15-15a2,2,0,0,1,0-2.8l15-15a2,2,0,1,1,2.8,2.8L59.6,50,73.2,63.6A2,2,0,0,1,73.2,65.6ZM42.4,65.6a2,2,0,0,1-2.8,0l-15-15a2,2,0,0,1,0-2.8l15-15a2,2,0,1,1,2.8,2.8L30.8,50,42.4,63.6A2,2,0,0,1,42.4,65.6Z" />
+        <g transform="translate(0, -1.5)">
+            <path d="M6 18h8" />
+            <path d="M3.5 24a2 3 0 0 1 2-2h15a2 3 0 0 1 2 2v1H3.5Z" />
+            <path d="M14 22a7 7 0 1 0 0-14h-1" />
+            <path d="M9 14h2" />
+            <path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z" />
+            <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3" />
+        </g>
     </svg>
   );
 }
