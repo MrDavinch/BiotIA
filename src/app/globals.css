@@ -84,7 +84,7 @@
 
 @layer components {
   .atlas-link {
-    @apply block rounded-lg p-2 font-bold text-white transition-all duration-300 ease-in-out;
+    @apply block rounded-md p-2 font-bold text-white transition-all duration-300 ease-in-out;
   }
   .atlas-link:hover {
     @apply scale-105 border-2 border-foreground/50 text-foreground;
@@ -94,7 +94,7 @@
   .atlas-link-principal { @apply bg-[#20A496]; }
   .atlas-link-hematologia { @apply bg-[#D32F2F]; } 
   .atlas-link-parasitologia { @apply bg-[#8D6E63]; }
-  .atlas-link-micologia { @apply bg-[#26A69A]; }
+  .atlas-link-micologia { @apply bg-[#4A90E2]; }
   .atlas-link-bacteriologia { @apply bg-[#9575CD]; }
   .atlas-link-citologia-histologia { @apply bg-[#EC407A]; }
   .atlas-link-uroanalisis { 
