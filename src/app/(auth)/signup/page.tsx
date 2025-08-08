@@ -16,7 +16,7 @@ export default function SignupPage() {
     <Card className="mx-auto max-w-sm w-full">
        <CardHeader className="space-y-1 text-center">
         <div className="flex justify-center mb-4">
-            <BiotiaLogo animated={true} className="w-20 h-20" />
+            <BiotiaLogo className="w-20 h-20" />
         </div>
         <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
         <CardDescription>
