@@ -27,7 +27,6 @@ const categories = [
 
 export default function AtlasPage() {
   const [activeTab, setActiveTab] = useState<string>('micologia');
-  const [activeTheme, setActiveTheme] = useState<string>('theme-micologia');
   const tabRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
@@ -39,15 +38,21 @@ export default function AtlasPage() {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
+     // Set theme on initial load
+    document.body.className = `theme-${activeTab}`;
   }, []);
+
+  useEffect(() => {
+    document.body.className = `theme-${activeTab}`;
+  }, [activeTab]);
+
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    setActiveTheme(`theme-${value}`);
   }
 
   return (
-    <div className={cn("flex flex-col", activeTheme)}>
+    <div className={cn("flex flex-col")}>
       <div className="mb-4">
         <h1 className="text-3xl font-bold font-headline">Atlas Educativo</h1>
         <p className="text-muted-foreground">
@@ -67,9 +72,7 @@ export default function AtlasPage() {
           </div>
         </div>
 
-        <div className={cn("p-4 rounded-b-lg transition-colors", 
-          "bg-[var(--theme-color-light)] dark:bg-[var(--theme-color-dark)]"
-        )}>
+        <div className={cn("p-4 rounded-b-lg transition-colors bg-card/50")}>
           {categories.map(cat => (
             <TabsContent key={cat.key} value={cat.key} id={cat.key} ref={el => tabRefs.current[cat.key] = el}>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

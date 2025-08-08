@@ -52,26 +52,31 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [hash, setHash] = React.useState('');
 
   React.useEffect(() => {
-    // This effect runs only on the client
     const onHashChange = () => {
-      setHash(window.location.hash);
+      const newHash = window.location.hash;
+      setHash(newHash);
+       if (pathname.startsWith('/atlas')) {
+        const theme = newHash.substring(1) || 'principal';
+        document.body.className = `theme-${theme}`;
+      }
     };
     
-    // Set initial hash
     setHash(window.location.hash);
-
-    // Set initial state for atlas collapsible
-    if (window.location.pathname.startsWith('/atlas')) {
+    
+    if (pathname.startsWith('/atlas')) {
       setIsAtlasOpen(true);
+      const theme = window.location.hash.substring(1) || 'principal';
+      document.body.className = `theme-${theme}`;
     } else {
       setIsAtlasOpen(false);
+      document.body.className = ''; // Reset theme when leaving atlas pages
     }
 
     window.addEventListener('hashchange', onHashChange, false);
     return () => {
       window.removeEventListener('hashchange', onHashChange, false);
     };
-  }, [pathname]); // Re-run when pathname changes
+  }, [pathname]);
 
   const sidebarNav = (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -103,9 +108,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
            </div>
         </CollapsibleTrigger>
         <CollapsibleContent className="py-1 pl-4 pr-2 space-y-2">
-            <Link href="/atlas"  className={cn(
+            <Link href="/atlas#principal"  className={cn(
                 'atlas-link atlas-link-principal',
-                 { 'border-2 border-foreground': pathname === '/atlas' && !hash }
+                 { 'border-2 border-foreground': hash === '#principal' || (pathname === '/atlas' && !hash) }
               )}>
                   Página Principal
               </Link>
@@ -130,7 +135,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/dashboard" className="flex items-center gap-2 font-semibold font-headline">
-              <BiotiaLogo className="h-8 w-8" />
+              <BiotiaLogo className="h-8 w-8 text-primary" />
               <span className="">BiotIA</span>
             </Link>
           </div>
@@ -160,17 +165,17 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="flex flex-col">
+            <SheetContent side="left" className="flex flex-col p-0">
                 <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                     <Link href="/dashboard" className="flex items-center gap-2 font-semibold font-headline">
-                    <BiotiaLogo className="h-8 w-8" />
+                    <BiotiaLogo className="h-8 w-8 text-primary" />
                     <span className="">BiotIA</span>
                     </Link>
                 </div>
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto py-2">
                     {sidebarNav}
                 </div>
-                 <div className="mt-auto p-4">
+                 <div className="mt-auto p-4 border-t">
                     <Link
                         href="/settings"
                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"

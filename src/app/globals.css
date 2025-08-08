@@ -28,14 +28,6 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
-    --sidebar-border: 173 30% 80%;
-    --sidebar-accent: 169 56% 92%;
-    --sidebar-accent-foreground: 222.2 84% 4.9%;
-    --sidebar-primary: 173 67% 38%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-ring: 173 67% 38%;
   }
   .dark {
     --background: 180 15% 10%;
@@ -62,14 +54,6 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 180 15% 10%;
-    --sidebar-foreground: 180 10% 90%;
-    --sidebar-border: 180 15% 25%;
-    --sidebar-accent: 180 15% 15%;
-    --sidebar-accent-foreground: 180 10% 90%;
-    --sidebar-primary: 173 67% 45%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-ring: 173 67% 45%;
   }
 }
 
@@ -78,14 +62,14 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-500;
   }
 }
 
 @layer components {
   .atlas-link {
     @apply block p-2 font-bold text-white transition-all duration-300 ease-in-out;
-    border-radius: 0.375rem;
+    border-radius: 0.5rem; /* More rounded corners */
   }
   .atlas-link:hover {
     @apply scale-105 border-2 border-foreground/50 text-foreground;
@@ -98,21 +82,38 @@
   .atlas-link-micologia { @apply bg-[#4A90E2]; }
   .atlas-link-bacteriologia { @apply bg-[#9575CD]; }
   .atlas-link-citologia-histologia { @apply bg-[#EC407A]; }
-  .atlas-link-uroanalisis { 
-    @apply bg-[#CCA200] text-white;
-  }
-   .atlas-link-uroanalisis:hover { 
-    @apply text-black;
-  }
+  .atlas-link-uroanalisis { @apply bg-[#bd9b00] text-white; }
+   .atlas-link-uroanalisis:hover { @apply text-black; }
 }
 
 
 @layer utilities {
-  .theme-mycology { --theme-color-light: hsl(30 80% 95%); --theme-color-dark: hsl(30 80% 20%); }
-  .theme-parasitology { --theme-color-light: hsl(60 80% 95%); --theme-color-dark: hsl(60 80% 20%); }
-  .theme-bacteriology { --theme-color-light: hsl(260 80% 95%); --theme-color-dark: hsl(260 80% 20%); }
-  .theme-hematology { --theme-color-light: hsl(0 80% 95%); --theme-color-dark: hsl(0 80% 20%); }
-  .theme-uroanalysis { --theme-color-light: hsl(50 80% 95%); --theme-color-dark: hsl(50 80% 20%); }
-  .theme-coproanalysis { --theme-color-light: hsl(35 50% 95%); --theme-color-dark: hsl(35 50% 20%); }
-  .theme-cytology-histologia { --theme-color-light: hsl(300 80% 95%); --theme-color-dark: hsl(300 80% 20%); }
+  .theme-principal {
+    --background: 169 56% 92%;
+    --primary: 173 67% 38%;
+  }
+  .theme-hematologia {
+    --background: 0 30% 92%;
+    --primary: 0 84% 60%;
+  }
+  .theme-parasitologia, .theme-coproanalisis {
+    --background: 25 30% 92%;
+    --primary: 25 50% 45%;
+  }
+  .theme-micologia {
+    --background: 210 30% 92%;
+    --primary: 210 70% 50%;
+  }
+  .theme-bacteriologia {
+    --background: 260 30% 92%;
+    --primary: 260 60% 65%;
+  }
+  .theme-citologia-histologia {
+    --background: 330 30% 92%;
+    --primary: 330 80% 60%;
+  }
+  .theme-uroanalisis {
+    --background: 50 30% 92%;
+    --primary: 50 95% 50%;
+  }
 }
