@@ -9,18 +9,18 @@ import {
 } from "@/components/ui/card";
 import { atlasData } from "@/lib/data";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 type CategoryKey = keyof typeof atlasData;
 
-const categoryNames: Record<CategoryKey, string> = {
-    general: 'Atlas General',
-    micologia: 'Atlas de Micología',
-    parasitologia: 'Atlas de Parasitología',
-    bacteriologia: 'Atlas de Bacteriología',
-    hematologia: 'Atlas de Hematología',
-    uroanalisis: 'Atlas de Uroanálisis',
-    coproanalisis: 'Atlas de Coproanálisis',
-    'citologia-histologia': 'Atlas de Citología / Histología',
+const categoryInfo: Record<CategoryKey, { title: string; className: string }> = {
+    general: { title: 'Atlas General', className: 'bg-teal-50' },
+    hematologia: { title: 'Atlas de Hematología', className: 'bg-red-50' },
+    parasitologia: { title: 'Atlas de Parasitología', className: 'bg-amber-50' },
+    micologia: { title: 'Atlas de Micología', className: 'bg-blue-50' },
+    bacteriologia: { title: 'Atlas de Bacteriología', className: 'bg-violet-50' },
+    'citologia-histologia': { title: 'Atlas de Citología / Histología', className: 'bg-pink-50' },
+    uroanalisis: { title: 'Atlas de Uroanálisis', className: 'bg-yellow-50' },
 };
 
 export default function AtlasPage() {
@@ -42,8 +42,8 @@ export default function AtlasPage() {
     };
   }, []);
 
-  const pageTitle = categoryNames[activeCategory] || 'Atlas Educativo';
-  const pageDescription = `Explora el banco de imágenes y las guías visuales para ${categoryNames[activeCategory].replace('Atlas de ', '')}.`;
+  const { title: pageTitle, className: backgroundClass } = categoryInfo[activeCategory] || categoryInfo.general;
+  const pageDescription = `Explora el banco de imágenes y las guías visuales para ${pageTitle.replace('Atlas de ', '')}.`;
   const currentItems = atlasData[activeCategory] || [];
   
   if (!isClient) {
@@ -72,7 +72,7 @@ export default function AtlasPage() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className={cn("flex flex-col p-6 rounded-lg transition-colors duration-500", backgroundClass)}>
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-headline">{pageTitle}</h1>
         <p className="text-muted-foreground">
@@ -80,9 +80,9 @@ export default function AtlasPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentItems.map((item) => (
-            <Card key={item.id} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:scale-105">
+            <Card key={item.id} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/80 backdrop-blur-sm">
             <CardContent className="p-0">
                 <Image
                 src={item.imageUrl}
