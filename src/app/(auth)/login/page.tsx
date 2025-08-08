@@ -20,7 +20,7 @@ export default function LoginPage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    router.push('/');
+    router.push('/dashboard');
   }
 
   return (

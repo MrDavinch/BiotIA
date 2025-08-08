@@ -12,6 +12,7 @@ import {
   Settings,
   CircleUser,
   PanelLeft,
+  LayoutDashboard,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,7 +29,7 @@ import { cn } from '@/lib/utils';
 import { BiotiaLogo } from '@/components/biotia-logo';
 
 const navItems = [
-  { href: '/', label: 'Inicio', icon: Home },
+  { href: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
   { href: '/chatbot', label: 'Chatbot IA', icon: Bot },
   { href: '/diagnostics', label: 'Diagnóstico por Imagen', icon: ScanSearch },
   { href: '/atlas', label: 'Atlas', icon: BookOpen },
@@ -61,7 +62,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold font-headline">
+            <Link href="/dashboard" className="flex items-center gap-2 font-semibold font-headline">
               <BiotiaLogo className="h-8 w-8" />
               <span className="">BiotIA Pro</span>
             </Link>
@@ -94,7 +95,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
                 <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-                    <Link href="/" className="flex items-center gap-2 font-semibold font-headline">
+                    <Link href="/dashboard" className="flex items-center gap-2 font-semibold font-headline">
                     <BiotiaLogo className="h-8 w-8" />
                     <span className="">BiotIA Pro</span>
                     </Link>
@@ -133,7 +134,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               <DropdownMenuItem asChild><Link href="/profile">Ver Perfil</Link></DropdownMenuItem>
               <DropdownMenuItem asChild><Link href="/settings">Ajustes</Link></DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
+              <DropdownMenuItem asChild><Link href="/login">Cerrar Sesión</Link></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
