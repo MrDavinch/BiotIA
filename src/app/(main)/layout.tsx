@@ -52,10 +52,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [hash, setHash] = React.useState('');
 
   React.useEffect(() => {
-    const onHashChange = () => setHash(window.location.hash);
+    const onHashChange = () => {
+      const newHash = window.location.hash;
+      setHash(newHash);
+      if (newHash.startsWith('#')) {
+         setIsAtlasOpen(true);
+      }
+    }
     
     setHash(window.location.hash);
-
+    
     if (pathname.startsWith('/atlas')) {
       setIsAtlasOpen(true);
     }
@@ -98,7 +104,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <CollapsibleContent className="py-1 pl-4 pr-2 space-y-2">
             <Link href="/atlas#general"  className={cn(
                 'atlas-link atlas-link-principal',
-                 { 'border-2 border-foreground': (pathname === '/atlas' && (hash === '#general' || !hash)) }
+                 { 'border-2 border-foreground': (pathname === '/atlas' && (hash === '#general' || hash === '')) }
               )}>
                   General
               </Link>
@@ -127,7 +133,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               <span className="">BiotIA</span>
             </Link>
           </div>
-          <div className="flex-1">
+          <div className="flex-1 overflow-y-auto">
             {sidebarNav}
           </div>
           <div className="mt-auto p-4">
