@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
+       exclude: /biotia-logo\.tsx$/,
       use: ['@svgr/webpack'],
     });
 
@@ -29,4 +30,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-
