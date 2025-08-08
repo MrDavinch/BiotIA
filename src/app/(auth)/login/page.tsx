@@ -14,9 +14,7 @@ import { BiotiaLogo } from "@/components/biotia-logo"
 export default function LoginPage() {
   return (
     <Card className="mx-auto max-w-sm w-full">
- <CardHeader className="space-y-1 text-center flex flex-col items-center">
-
-
+      <CardHeader className="space-y-1 text-center flex flex-col items-center">
         <BiotiaLogo className="w-20 h-20 mb-4" />
         <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
         <CardDescription>
