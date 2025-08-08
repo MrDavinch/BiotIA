@@ -29,24 +29,21 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { BiotiaLogo } from '@/components/biotia-logo';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { atlasData } from '@/lib/data';
 
 const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
   { href: '/chatbot', label: 'Chatbot IA', icon: Bot },
   { href: '/diagnostics', label: 'Diagnóstico por Imagen', icon: ScanSearch },
-  // Atlas will be handled separately
   { href: '/community', label: 'Casos Compartidos', icon: Users },
 ];
 
 const atlasCategories = [
-    { key: 'micologia', name: 'Micología', className: 'atlas-link-micologia' },
-    { key: 'parasitologia', name: 'Parasitología', className: 'atlas-link-parasitologia' },
-    { key: 'bacteriologia', name: 'Bacteriología', className: 'atlas-link-bacteriologia' },
     { key: 'hematologia', name: 'Hematología', className: 'atlas-link-hematologia' },
-    { key: 'uroanalisis', name: 'Uroanálisis', className: 'atlas-link-uroanalisis' },
-    { key: 'coproanalisis', name: 'Coproanálisis', className: 'atlas-link-coproanalisis' },
+    { key: 'parasitologia', name: 'Parasitología / Coproanálisis', className: 'atlas-link-parasitologia' },
+    { key: 'micologia', name: 'Micología', className: 'atlas-link-micologia' },
+    { key: 'bacteriologia', name: 'Bacteriología', className: 'atlas-link-bacteriologia' },
     { key: 'citologia-histologia', name: 'Citología / Histología', className: 'atlas-link-citologia-histologia' },
+    { key: 'uroanalisis', name: 'Uroanálisis', className: 'atlas-link-uroanalisis' },
 ];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -55,12 +52,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [hash, setHash] = React.useState('');
 
   React.useEffect(() => {
-    // This effect runs only on the client
     const onHashChange = () => {
       setHash(window.location.hash);
     };
     
-    // Set initial hash
     setHash(window.location.hash);
 
     window.addEventListener('hashchange', onHashChange, false);
@@ -73,6 +68,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   React.useEffect(() => {
     if (pathname.startsWith('/atlas')) {
       setIsAtlasOpen(true);
+    } else {
+      setIsAtlasOpen(false);
     }
   }, [pathname]);
 

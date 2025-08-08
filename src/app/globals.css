@@ -84,20 +84,20 @@
 
 @layer components {
   .atlas-link {
-    @apply text-white font-bold block rounded-md p-2 text-sm transition-all duration-300 ease-in-out;
+    @apply block rounded-md p-2 font-bold text-white transition-all duration-300 ease-in-out;
   }
   .atlas-link:hover {
     @apply scale-105 border-2 border-foreground/50 text-foreground;
   }
 
-  .atlas-link-micologia { @apply bg-teal-200 text-teal-800; }
-  .atlas-link-parasitologia { @apply bg-sky-200 text-sky-800; }
-  .atlas-link-bacteriologia { @apply bg-indigo-200 text-indigo-800; }
-  .atlas-link-hematologia { @apply bg-rose-200 text-rose-800; }
-  .atlas-link-uroanalisis { @apply bg-amber-200 text-amber-800; }
-  .atlas-link-coproanalisis { @apply bg-orange-200 text-orange-800; }
-  .atlas-link-citologia-histologia { @apply bg-cyan-200 text-cyan-800; }
-  .atlas-link-principal { @apply bg-slate-300 text-slate-800; }
+  /* Custom Atlas Link Colors */
+  .atlas-link-principal { @apply bg-[#008080]; } /* Teal */
+  .atlas-link-hematologia { @apply bg-[#E57373]; } /* Red */
+  .atlas-link-parasitologia { @apply bg-[#A1887F]; } /* Brown */
+  .atlas-link-micologia { @apply bg-[#4DB6AC]; } /* Bluish-green */
+  .atlas-link-bacteriologia { @apply bg-[#BA68C8]; } /* Lilac/Violet */
+  .atlas-link-citologia-histologia { @apply bg-[#F06292]; } /* Pink */
+  .atlas-link-uroanalisis { @apply bg-[#FFD54F]; } /* Yellow */
 }
 
 
