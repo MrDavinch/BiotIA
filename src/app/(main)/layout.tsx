@@ -38,13 +38,12 @@ const navItems = [
 ];
 
 const atlasCategories = [
-    { key: 'micologia', name: 'Micología', className: 'atlas-link-micologia' },
-    { key: 'parasitologia', name: 'Parasitología / Copro', className: 'atlas-link-parasitologia' },
-    { key: 'bacteriologia', name: 'Bacteriología', className: 'atlas-link-bacteriologia' },
     { key: 'hematologia', name: 'Hematología', className: 'atlas-link-hematologia' },
+    { key: 'parasitologia', name: 'Parasitología', className: 'atlas-link-parasitologia' },
+    { key: 'micologia', name: 'Micología', className: 'atlas-link-micologia' },
+    { key: 'bacteriologia', name: 'Bacteriología', className: 'atlas-link-bacteriologia' },
+    { key: 'citologia-histologia', name: 'Citología', className: 'atlas-link-citologia-histologia' },
     { key: 'uroanalisis', name: 'Uroanálisis', className: 'atlas-link-uroanalisis' },
-    { key: 'coproanalisis', name: 'Coproanálisis', className: 'atlas-link-coproanalisis' },
-    { key: 'citologia-histologia', name: 'Citología / Histología', className: 'atlas-link-citologia-histologia' },
 ];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
