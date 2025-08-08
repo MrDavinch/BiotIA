@@ -2,21 +2,29 @@
 
 import { cn } from "@/lib/utils";
 
-interface BiotiaLogoProps {
+interface BiotiaLogoProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-export function BiotiaLogo({ className }: BiotiaLogoProps) {
+export function BiotiaLogo({ className, ...props }: BiotiaLogoProps) {
   return (
-    <div className={cn("p-2 bg-primary rounded-lg", className)}>
-      <svg
-        viewBox="0 0 1024 1024"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full"
-        fill="white"
-      >
-        <path d="M725.333 170.667h-42.666v-85.334c0-23.552-19.115-42.666-42.667-42.666h-128c-23.552 0-42.667 19.115-42.667 42.666v85.334h-42.666c-23.552 0-42.667 19.115-42.667 42.666v256c0 23.552 19.115 42.667 42.667 42.667h256c23.552 0 42.667-19.115 42.667-42.667v-256c0-23.552-19.115-42.666-42.667-42.666zm-170.666-42.666h42.666v42.666h-42.666v-42.666zm128 298.666H469.333V256h213.334v170.667zM768 512H341.333c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667H768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667zM725.333 682.667H384c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667h341.333c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667zM298.667 512c-47.061 0-85.333 38.272-85.334 85.333v256h170.667V597.333C384 550.272 345.728 512 298.667 512z" />
-      </svg>
-    </div>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={cn("text-primary", className)}
+      {...props}
+    >
+        <path d="M17 10h.01" />
+        <path d="M10 14h.01" />
+        <path d="m19 12-7-7-7 7" />
+        <path d="M12 22V5" />
+        <path d="M12 12H5.7c-.4 3.4-3 6.3-6.4 6.3" />
+        <path d="M12 12h6.3c.4 3.4 3 6.3 6.4 6.3" />
+    </svg>
   );
 }
