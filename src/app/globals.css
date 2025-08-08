@@ -91,14 +91,14 @@
     @apply scale-105 border-2 border-current p-3 text-foreground;
   }
 
-  .atlas-link-micologia { @apply bg-[#006666]; }
-  .atlas-link-parasitologia { @apply bg-[#ff6637]; }
-  .atlas-link-bacteriologia { @apply bg-[#660066]; }
-  .atlas-link-hematologia { @apply bg-[#CC0000]; }
-  .atlas-link-uroanalisis { @apply bg-[#CCAA00]; }
-  .atlas-link-coproanalisis { @apply bg-[#6E3511]; }
-  .atlas-link-citologia-histologia { @apply bg-[#c32f6c]; }
-  .atlas-link-principal { @apply bg-[#3b5998]; }
+ .atlas-link-micologia { @apply bg-[#2E8B57]; } /* SeaGreen */
+  .atlas-link-parasitologia { @apply bg-[#4682B4]; } /* SteelBlue */
+  .atlas-link-bacteriologia { @apply bg-[#6A5ACD]; } /* SlateBlue */
+  .atlas-link-hematologia { @apply bg-[#C71585]; } /* MediumVioletRed */
+  .atlas-link-uroanalisis { @apply bg-[#DAA520]; } /* GoldenRod */
+  .atlas-link-coproanalisis { @apply bg-[#8B4513]; } /* SaddleBrown */
+  .atlas-link-citologia-histologia { @apply bg-[#5F9EA0]; } /* CadetBlue */
+  .atlas-link-principal { @apply bg-[#483D8B]; } /* DarkSlateBlue */
 }
 
 
