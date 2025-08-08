@@ -84,20 +84,25 @@
 
 @layer components {
   .atlas-link {
-    @apply block rounded-md p-2 font-bold text-white transition-all duration-300 ease-in-out;
+    @apply block rounded-lg p-2 font-bold text-white transition-all duration-300 ease-in-out;
   }
   .atlas-link:hover {
     @apply scale-105 border-2 border-foreground/50 text-foreground;
   }
 
   /* Custom Atlas Link Colors */
-  .atlas-link-principal { @apply bg-[#008080]; } /* Teal */
-  .atlas-link-hematologia { @apply bg-[#E57373]; } /* Red */
-  .atlas-link-parasitologia { @apply bg-[#A1887F]; } /* Brown */
-  .atlas-link-micologia { @apply bg-[#4DB6AC]; } /* Bluish-green */
-  .atlas-link-bacteriologia { @apply bg-[#BA68C8]; } /* Lilac/Violet */
-  .atlas-link-citologia-histologia { @apply bg-[#F06292]; } /* Pink */
-  .atlas-link-uroanalisis { @apply bg-[#FFD54F]; } /* Yellow */
+  .atlas-link-principal { @apply bg-[#20A496]; }
+  .atlas-link-hematologia { @apply bg-[#D32F2F]; } 
+  .atlas-link-parasitologia { @apply bg-[#8D6E63]; }
+  .atlas-link-micologia { @apply bg-[#26A69A]; }
+  .atlas-link-bacteriologia { @apply bg-[#9575CD]; }
+  .atlas-link-citologia-histologia { @apply bg-[#EC407A]; }
+  .atlas-link-uroanalisis { 
+    @apply bg-[#FBC02D] text-black;
+  }
+   .atlas-link-uroanalisis:hover { 
+    @apply text-black;
+  }
 }
 
 

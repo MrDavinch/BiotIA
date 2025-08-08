@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Bell,
@@ -39,7 +39,7 @@ const navItems = [
 
 const atlasCategories = [
     { key: 'hematologia', name: 'Hematología', className: 'atlas-link-hematologia' },
-    { key: 'parasitologia', name: 'Parasitología / Coproanálisis', className: 'atlas-link-parasitologia' },
+    { key: 'parasitologia', name: 'Parasitología / Copro', className: 'atlas-link-parasitologia' },
     { key: 'micologia', name: 'Micología', className: 'atlas-link-micologia' },
     { key: 'bacteriologia', name: 'Bacteriología', className: 'atlas-link-bacteriologia' },
     { key: 'citologia-histologia', name: 'Citología / Histología', className: 'atlas-link-citologia-histologia' },
@@ -52,26 +52,26 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [hash, setHash] = React.useState('');
 
   React.useEffect(() => {
+    // This effect runs only on the client
     const onHashChange = () => {
       setHash(window.location.hash);
     };
     
+    // Set initial hash
     setHash(window.location.hash);
+
+    // Set initial state for atlas collapsible
+    if (window.location.pathname.startsWith('/atlas')) {
+      setIsAtlasOpen(true);
+    } else {
+      setIsAtlasOpen(false);
+    }
 
     window.addEventListener('hashchange', onHashChange, false);
     return () => {
       window.removeEventListener('hashchange', onHashChange, false);
     };
-  }, []);
-
-
-  React.useEffect(() => {
-    if (pathname.startsWith('/atlas')) {
-      setIsAtlasOpen(true);
-    } else {
-      setIsAtlasOpen(false);
-    }
-  }, [pathname]);
+  }, [pathname]); // Re-run when pathname changes
 
   const sidebarNav = (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
