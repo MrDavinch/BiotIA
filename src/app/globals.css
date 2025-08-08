@@ -99,7 +99,7 @@
   .atlas-link-bacteriologia { @apply bg-[#9575CD]; }
   .atlas-link-citologia-histologia { @apply bg-[#EC407A]; }
   .atlas-link-uroanalisis { 
-    @apply bg-[#FBC02D] text-black;
+    @apply bg-[#FBC02D] text-white;
   }
    .atlas-link-uroanalisis:hover { 
     @apply text-black;
