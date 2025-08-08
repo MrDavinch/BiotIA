@@ -52,6 +52,23 @@ const atlasCategories = [
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isAtlasOpen, setIsAtlasOpen] = React.useState(false);
+  const [hash, setHash] = React.useState('');
+
+  React.useEffect(() => {
+    // This effect runs only on the client
+    const onHashChange = () => {
+      setHash(window.location.hash);
+    };
+    
+    // Set initial hash
+    setHash(window.location.hash);
+
+    window.addEventListener('hashchange', onHashChange, false);
+    return () => {
+      window.removeEventListener('hashchange', onHashChange, false);
+    };
+  }, []);
+
 
   React.useEffect(() => {
     if (pathname.startsWith('/atlas')) {
@@ -91,14 +108,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <CollapsibleContent className="py-1 pl-8 space-y-1">
             <Link href="/atlas"  className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-xs',
-                 { 'bg-muted text-primary': pathname === '/atlas' && !window.location.hash }
+                 { 'bg-muted text-primary': pathname === '/atlas' && !hash }
               )}>
                   Página Principal
               </Link>
             {atlasCategories.map(category => (
               <Link key={category.key} href={`/atlas#${category.key}`} className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-xs",
-                 { 'bg-muted text-primary': pathname.includes(`/atlas#${category.key}`) }
+                 { 'bg-muted text-primary': hash === `#${category.key}` }
               )}>
                 {category.name}
               </Link>
