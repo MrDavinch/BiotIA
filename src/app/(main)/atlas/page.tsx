@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   Card,
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { atlasData } from "@/lib/data";
-import { cn } from "@/lib/utils";
 
 type Category = keyof typeof atlasData;
 
@@ -27,32 +26,22 @@ const categories = [
 
 export default function AtlasPage() {
   const [activeTab, setActiveTab] = useState<string>('micologia');
-  const tabRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const hash = window.location.hash.substring(1);
     if (hash && categories.some(c => c.key === hash)) {
       setActiveTab(hash);
-      const element = tabRefs.current[hash];
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
     }
-     // Set theme on initial load
-    document.body.className = `theme-${activeTab}`;
   }, []);
-
-  useEffect(() => {
-    document.body.className = `theme-${activeTab}`;
-  }, [activeTab]);
-
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   }
 
   return (
-    <div className={cn("flex flex-col")}>
+    <div className="flex flex-col">
       <div className="mb-4">
         <h1 className="text-3xl font-bold font-headline">Atlas Educativo</h1>
         <p className="text-muted-foreground">
@@ -61,20 +50,17 @@ export default function AtlasPage() {
       </div>
 
       <Tabs value={activeTab} className="w-full" onValueChange={handleTabChange}>
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent dark:from-background to-transparent h-8 -bottom-4" />
-          <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-2">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
-              {categories.map(cat => (
-                <TabsTrigger key={cat.key} value={cat.key}>{cat.name}</TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
+        <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-2">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
+            {categories.map(cat => (
+              <TabsTrigger key={cat.key} value={cat.key}>{cat.name}</TabsTrigger>
+            ))}
+          </TabsList>
         </div>
 
-        <div className={cn("p-4 rounded-b-lg transition-colors bg-card/50")}>
-          {categories.map(cat => (
-            <TabsContent key={cat.key} value={cat.key} id={cat.key} ref={el => tabRefs.current[cat.key] = el}>
+        <div className="p-4">
+          {isClient && categories.map(cat => (
+            <TabsContent key={cat.key} value={cat.key}>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {(atlasData[cat.key as Category] || []).map((item) => (
                   <Card key={item.id} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:scale-105">

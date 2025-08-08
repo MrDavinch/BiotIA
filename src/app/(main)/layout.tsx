@@ -48,28 +48,16 @@ const atlasCategories = [
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isAtlasOpen, setIsAtlasOpen] = React.useState(false);
+  const [isAtlasOpen, setIsAtlasOpen] = React.useState(pathname.startsWith('/atlas'));
   const [hash, setHash] = React.useState('');
 
   React.useEffect(() => {
-    const onHashChange = () => {
-      const newHash = window.location.hash;
-      setHash(newHash);
-       if (pathname.startsWith('/atlas')) {
-        const theme = newHash.substring(1) || 'principal';
-        document.body.className = `theme-${theme}`;
-      }
-    };
+    const onHashChange = () => setHash(window.location.hash);
     
     setHash(window.location.hash);
-    
+
     if (pathname.startsWith('/atlas')) {
       setIsAtlasOpen(true);
-      const theme = window.location.hash.substring(1) || 'principal';
-      document.body.className = `theme-${theme}`;
-    } else {
-      setIsAtlasOpen(false);
-      document.body.className = ''; // Reset theme when leaving atlas pages
     }
 
     window.addEventListener('hashchange', onHashChange, false);
@@ -108,9 +96,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
            </div>
         </CollapsibleTrigger>
         <CollapsibleContent className="py-1 pl-4 pr-2 space-y-2">
-            <Link href="/atlas#principal"  className={cn(
+            <Link href="/atlas"  className={cn(
                 'atlas-link atlas-link-principal',
-                 { 'border-2 border-foreground': hash === '#principal' || (pathname === '/atlas' && !hash) }
+                 { 'border-2 border-foreground': (pathname === '/atlas' && !hash) }
               )}>
                   Página Principal
               </Link>
