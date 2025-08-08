@@ -84,7 +84,8 @@
 
 @layer components {
   .atlas-link {
-    @apply block rounded-md p-2 font-bold text-white transition-all duration-300 ease-in-out;
+    @apply block p-2 font-bold text-white transition-all duration-300 ease-in-out;
+    border-radius: 0.375rem;
   }
   .atlas-link:hover {
     @apply scale-105 border-2 border-foreground/50 text-foreground;
