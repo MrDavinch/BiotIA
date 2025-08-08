@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Bell,
@@ -40,13 +40,13 @@ const navItems = [
 ];
 
 const atlasCategories = [
-    { key: 'micologia', name: 'Micología' },
-    { key: 'parasitologia', name: 'Parasitología' },
-    { key: 'bacteriologia', name: 'Bacteriología' },
-    { key: 'hematologia', name: 'Hematología' },
-    { key: 'uroanalisis', name: 'Uroanálisis' },
-    { key: 'coproanalisis', name: 'Coproanálisis' },
-    { key: 'citologia-histologia', name: 'Citología / Histología' },
+    { key: 'micologia', name: 'Micología', className: 'atlas-link-micologia' },
+    { key: 'parasitologia', name: 'Parasitología', className: 'atlas-link-parasitologia' },
+    { key: 'bacteriologia', name: 'Bacteriología', className: 'atlas-link-bacteriologia' },
+    { key: 'hematologia', name: 'Hematología', className: 'atlas-link-hematologia' },
+    { key: 'uroanalisis', name: 'Uroanálisis', className: 'atlas-link-uroanalisis' },
+    { key: 'coproanalisis', name: 'Coproanálisis', className: 'atlas-link-coproanalisis' },
+    { key: 'citologia-histologia', name: 'Citología / Histología', className: 'atlas-link-citologia-histologia' },
 ];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -102,20 +102,21 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <BookOpen className="h-5 w-5 transition-transform duration-300 group-hover:rotate-[15deg]" />
                 Atlas
               </div>
-              <ChevronDown className={cn("h-4 w-4 transition-transform", isAtlasOpen && "rotate-180")} />
+              <ChevronDown className={cn("h-5 w-5 text-primary transition-transform", isAtlasOpen && "rotate-180")} />
            </div>
         </CollapsibleTrigger>
-        <CollapsibleContent className="py-1 pl-8 space-y-1">
+        <CollapsibleContent className="py-1 pl-4 pr-2 space-y-2">
             <Link href="/atlas"  className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-xs',
-                 { 'bg-muted text-primary': pathname === '/atlas' && !hash }
+                'atlas-link atlas-link-principal',
+                 { 'border-2 border-foreground': pathname === '/atlas' && !hash }
               )}>
                   Página Principal
               </Link>
             {atlasCategories.map(category => (
               <Link key={category.key} href={`/atlas#${category.key}`} className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-xs",
-                 { 'bg-muted text-primary': hash === `#${category.key}` }
+                "atlas-link",
+                category.className,
+                 { 'border-2 border-foreground': hash === `#${category.key}` }
               )}>
                 {category.name}
               </Link>
