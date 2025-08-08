@@ -38,17 +38,18 @@ const navItems = [
 ];
 
 const atlasCategories = [
-    { key: 'hematologia', name: 'Hematología', className: 'atlas-link-hematologia' },
-    { key: 'parasitologia', name: 'Parasitología / Copro', className: 'atlas-link-parasitologia' },
     { key: 'micologia', name: 'Micología', className: 'atlas-link-micologia' },
+    { key: 'parasitologia', name: 'Parasitología / Copro', className: 'atlas-link-parasitologia' },
     { key: 'bacteriologia', name: 'Bacteriología', className: 'atlas-link-bacteriologia' },
-    { key: 'citologia-histologia', name: 'Citología / Histología', className: 'atlas-link-citologia-histologia' },
+    { key: 'hematologia', name: 'Hematología', className: 'atlas-link-hematologia' },
     { key: 'uroanalisis', name: 'Uroanálisis', className: 'atlas-link-uroanalisis' },
+    { key: 'coproanalisis', name: 'Coproanálisis', className: 'atlas-link-coproanalisis' },
+    { key: 'citologia-histologia', name: 'Citología / Histología', className: 'atlas-link-citologia-histologia' },
 ];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isAtlasOpen, setIsAtlasOpen] = React.useState(pathname.startsWith('/atlas'));
+  const [isAtlasOpen, setIsAtlasOpen] = React.useState(false);
   const [hash, setHash] = React.useState('');
 
   React.useEffect(() => {
@@ -96,11 +97,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
            </div>
         </CollapsibleTrigger>
         <CollapsibleContent className="py-1 pl-4 pr-2 space-y-2">
-            <Link href="/atlas"  className={cn(
+            <Link href="/atlas#general"  className={cn(
                 'atlas-link atlas-link-principal',
-                 { 'border-2 border-foreground': (pathname === '/atlas' && !hash) }
+                 { 'border-2 border-foreground': (pathname === '/atlas' && (hash === '#general' || !hash)) }
               )}>
-                  Página Principal
+                  General
               </Link>
             {atlasCategories.map(category => (
               <Link key={category.key} href={`/atlas#${category.key}`} className={cn(
