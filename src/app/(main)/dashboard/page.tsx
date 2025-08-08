@@ -21,7 +21,7 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="font-headline text-2xl">Bienvenido, Dr. Reed</CardTitle>
             <CardDescription>
-              Aquí está un resumen de su actividad reciente en BiotIA Pro.
+              Aquí está un resumen de su actividad reciente en BiotIA.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-4">

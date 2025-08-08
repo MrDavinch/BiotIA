@@ -29,7 +29,7 @@ export default function LoginPage() {
         <BiotiaLogo className="w-20 h-20 mb-4" />
         <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
         <CardDescription>
-          Enter your email below to login to your BiotIA Pro account
+          Enter your email below to login to your BiotIA account
         </CardDescription>
       </CardHeader>
       <CardContent>

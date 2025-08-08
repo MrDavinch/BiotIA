@@ -1,4 +1,4 @@
-# **App Name**: BiotIA Pro
+# **App Name**: BiotIA
 
 ## Core Features:
 

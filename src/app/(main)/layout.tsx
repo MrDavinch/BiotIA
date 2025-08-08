@@ -46,7 +46,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           key={href}
           href={href}
           className={cn(
-            'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary group',
+            'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary group hover:scale-105 hover:border hover:border-primary',
             { 'bg-muted text-primary': pathname === href }
           )}
         >
@@ -64,7 +64,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/dashboard" className="flex items-center gap-2 font-semibold font-headline">
               <BiotiaLogo className="h-8 w-8" />
-              <span className="">BiotIA Pro</span>
+              <span className="">BiotIA</span>
             </Link>
           </div>
           <div className="flex-1">
@@ -97,7 +97,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                     <Link href="/dashboard" className="flex items-center gap-2 font-semibold font-headline">
                     <BiotiaLogo className="h-8 w-8" />
-                    <span className="">BiotIA Pro</span>
+                    <span className="">BiotIA</span>
                     </Link>
                 </div>
                 <div className="flex-1 overflow-y-auto">
