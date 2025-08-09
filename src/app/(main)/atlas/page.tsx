@@ -1,7 +1,9 @@
+
 'use client';
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -26,21 +28,28 @@ const categoryInfo: Record<CategoryKey, { title: string; className: string }> = 
 export default function AtlasPage() {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>('general');
   const [isClient, setIsClient] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsClient(true);
+    
     const handleHashChange = () => {
       const hash = window.location.hash.substring(1) as CategoryKey;
-      setActiveCategory(hash in atlasData ? hash : 'general');
+      if (hash && hash in atlasData) {
+        setActiveCategory(hash);
+      } else {
+        setActiveCategory('general');
+      }
     };
 
     handleHashChange(); // Set initial category based on hash
+    
     window.addEventListener('hashchange', handleHashChange, false);
 
     return () => {
       window.removeEventListener('hashchange', handleHashChange, false);
     };
-  }, []);
+  }, [pathname]);
 
   const { title: pageTitle, className: backgroundClass } = categoryInfo[activeCategory] || categoryInfo.general;
   const pageDescription = `Explora el banco de imágenes y las guías visuales para ${pageTitle.replace('Atlas de ', '')}.`;
@@ -106,3 +115,4 @@ export default function AtlasPage() {
     </div>
   );
 }
+
