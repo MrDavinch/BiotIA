@@ -1,12 +1,27 @@
 'use client';
 
 import { cn } from "@/lib/utils";
+import { useAtlasTheme } from "@/components/atlas-theme-provider";
 
 interface BiotiaLogoProps {
   className?: string;
+  useThemeColor?: boolean;
 }
 
-export function BiotiaLogo({ className }: BiotiaLogoProps) {
+export function BiotiaLogo({ className, useThemeColor = false }: BiotiaLogoProps) {
+  let logoClassName = "text-primary";
+  
+  // Use theme color when requested and in Atlas context
+  if (useThemeColor) {
+    try {
+      const { currentTheme } = useAtlasTheme();
+      logoClassName = "atlas-theme-text";
+    } catch {
+      // Fallback to default if not in Atlas context
+      logoClassName = "text-primary";
+    }
+  }
+
   return (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -16,7 +31,7 @@ export function BiotiaLogo({ className }: BiotiaLogoProps) {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className={cn("text-primary", className)}
+        className={cn(logoClassName, "transition-colors duration-500", className)}
         aria-hidden="true"
     >
         <g transform="translate(0, -1.5)">

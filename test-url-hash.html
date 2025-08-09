@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test URL Hash Management - Atlas Theming</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-link {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .test-link:hover {
+            background-color: #0056b3;
+        }
+        .current-hash {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .instructions {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test URL Hash Management - Atlas Theming</h1>
+    
+    <div class="instructions">
+        <h3>📋 Instrucciones de Prueba:</h3>
+        <ol>
+            <li>Haz clic en los enlaces de abajo para probar diferentes temas</li>
+            <li>Observa cómo cambia el hash en la URL del navegador</li>
+            <li>Usa los botones de atrás/adelante del navegador</li>
+            <li>Recarga la página para probar la persistencia</li>
+            <li>Prueba URLs inválidas para ver el manejo de errores</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h3>🎨 Enlaces de Prueba de Temas</h3>
+        <p>Haz clic en estos enlaces para probar la navegación por hash:</p>
+        
+        <a href="http://localhost:9002/atlas#general" class="test-link" target="_blank">
+            🏥 General
+        </a>
+        <a href="http://localhost:9002/atlas#hematologia" class="test-link" target="_blank">
+            🩸 Hematología
+        </a>
+        <a href="http://localhost:9002/atlas#parasitologia" class="test-link" target="_blank">
+            🦠 Parasitología
+        </a>
+        <a href="http://localhost:9002/atlas#micologia" class="test-link" target="_blank">
+            🍄 Micología
+        </a>
+        <a href="http://localhost:9002/atlas#bacteriologia" class="test-link" target="_blank">
+            🦠 Bacteriología
+        </a>
+        <a href="http://localhost:9002/atlas#citologia-histologia" class="test-link" target="_blank">
+            🔬 Citología
+        </a>
+        <a href="http://localhost:9002/atlas#uroanalisis" class="test-link" target="_blank">
+            💧 Uroanálisis
+        </a>
+        <a href="http://localhost:9002/atlas#coproanalisis" class="test-link" target="_blank">
+            🧪 Coproanálisis
+        </a>
+    </div>
+
+    <div class="test-section">
+        <h3>⚠️ Pruebas de Manejo de Errores</h3>
+        <p>Estos enlaces prueban el manejo de categorías inválidas:</p>
+        
+        <a href="http://localhost:9002/atlas#invalid-theme" class="test-link" target="_blank" style="background-color: #dc3545;">
+            ❌ Tema Inválido
+        </a>
+        <a href="http://localhost:9002/atlas#123invalid" class="test-link" target="_blank" style="background-color: #dc3545;">
+            ❌ Hash Malformado
+        </a>
+        <a href="http://localhost:9002/atlas#" class="test-link" target="_blank" style="background-color: #ffc107; color: #000;">
+            ⚠️ Hash Vacío
+        </a>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Verificaciones Esperadas</h3>
+        <ul>
+            <li>✅ <strong>Cambio de tema instantáneo:</strong> El tema debe cambiar inmediatamente al hacer clic</li>
+            <li>✅ <strong>URL actualizada:</strong> El hash en la URL debe reflejar el tema seleccionado</li>
+            <li>✅ <strong>Navegación del navegador:</strong> Los botones atrás/adelante deben cambiar temas</li>
+            <li>✅ <strong>Persistencia:</strong> Al recargar la página, debe mantener el tema del hash</li>
+            <li>✅ <strong>Manejo de errores:</strong> Temas inválidos deben fallback a 'general'</li>
+            <li>✅ <strong>Indicadores visuales:</strong> La sidebar debe mostrar el tema activo</li>
+            <li>✅ <strong>Transiciones suaves:</strong> Los cambios de tema deben ser fluidos</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h3>🛠️ Pruebas Técnicas Adicionales</h3>
+        <p>Para desarrolladores - abrir DevTools y verificar:</p>
+        <ul>
+            <li><strong>Console:</strong> Mensajes de debug sobre cambios de tema</li>
+            <li><strong>Session Storage:</strong> Clave 'atlas-theme-category' debe actualizarse</li>
+            <li><strong>CSS Variables:</strong> Variables --atlas-* deben cambiar en :root</li>
+            <li><strong>Network:</strong> No debe haber recargas de página al cambiar temas</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h3>📱 Pruebas de Responsividad</h3>
+        <p>Probar en diferentes tamaños de pantalla:</p>
+        <ul>
+            <li>Desktop (>1024px)</li>
+            <li>Tablet (768px - 1024px)</li>
+            <li>Mobile (<768px)</li>
+        </ul>
+    </div>
+
+    <script>
+        // Mostrar hash actual
+        function updateCurrentHash() {
+            const hash = window.location.hash || '#(ninguno)';
+            const hashDisplay = document.getElementById('current-hash');
+            if (hashDisplay) {
+                hashDisplay.textContent = hash;
+            }
+        }
+
+        // Escuchar cambios de hash
+        window.addEventListener('hashchange', updateCurrentHash);
+        window.addEventListener('load', updateCurrentHash);
+
+        // Agregar display del hash actual
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstSection = document.querySelector('.test-section');
+            const hashInfo = document.createElement('div');
+            hashInfo.innerHTML = '<h4>🔗 Hash Actual: <span id="current-hash" class="current-hash">' + (window.location.hash || '#(ninguno)') + '</span></h4>';
+            firstSection.insertBefore(hashInfo, firstSection.firstChild);
+        });
+    </script>
+</body>
+</html>

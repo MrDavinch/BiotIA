@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { usePathname } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -12,59 +11,47 @@ import {
 import { atlasData } from "@/lib/data";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useAtlasTheme } from "@/components/atlas-theme-provider";
+import { ThemeBackground, ThemeTitle, ThemeText } from "@/components/theme-background";
 
 type CategoryKey = keyof typeof atlasData;
 
-const categoryInfo: Record<CategoryKey, { title: string; className: string }> = {
-    general: { title: 'Atlas General', className: 'bg-teal-50' },
-    hematologia: { title: 'Atlas de Hematología', className: 'bg-red-50' },
-    parasitologia: { title: 'Atlas de Parasitología', className: 'bg-amber-50' },
-    micologia: { title: 'Atlas de Micología', className: 'bg-blue-50' },
-    bacteriologia: { title: 'Atlas de Bacteriología', className: 'bg-violet-50' },
-    'citologia-histologia': { title: 'Atlas de Citología / Histología', className: 'bg-pink-50' },
-    uroanalisis: { title: 'Atlas de Uroanálisis', className: 'bg-yellow-50' },
-};
-
 export default function AtlasPage() {
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>('general');
   const [isClient, setIsClient] = useState(false);
-  const pathname = usePathname();
+  
+  // Use the Atlas theme context instead of local state
+  const { currentTheme } = useAtlasTheme();
+  const activeCategory = currentTheme.category;
 
   useEffect(() => {
     setIsClient(true);
-    
-    const handleHashChange = () => {
-      const hash = window.location.hash.substring(1) as CategoryKey;
-      if (hash && hash in atlasData) {
-        setActiveCategory(hash);
-      } else {
-        setActiveCategory('general');
-      }
-    };
+  }, []);
 
-    handleHashChange(); // Set initial category based on hash
-    
-    window.addEventListener('hashchange', handleHashChange, false);
+  // Force re-render when theme changes
+  useEffect(() => {
+    // This effect will run whenever currentTheme changes
+    // ensuring the component updates with new theme data
+    console.debug('Atlas page theme changed:', {
+      category: activeCategory,
+      themeName: currentTheme.name,
+      itemCount: atlasData[activeCategory]?.length || 0
+    });
+  }, [currentTheme, activeCategory]);
 
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange, false);
-    };
-  }, [pathname]);
-
-  const { title: pageTitle, className: backgroundClass } = categoryInfo[activeCategory] || categoryInfo.general;
-  const pageDescription = `Explora el banco de imágenes y las guías visuales para ${pageTitle.replace('Atlas de ', '')}.`;
+  const pageTitle = currentTheme.name;
+  const pageDescription = `Explora el banco de imágenes y las guías visuales para ${pageTitle.replace('Atlas de ', '').replace('Atlas ', '')}.`;
   const currentItems = atlasData[activeCategory] || [];
   
   if (!isClient) {
     return (
-        <div className="flex flex-col">
+        <ThemeBackground className="flex flex-col p-6 rounded-lg">
             <div className="mb-8">
                 <Skeleton className="h-10 w-2/3 mb-2" />
                 <Skeleton className="h-5 w-1/2" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {[...Array(8)].map((_, i) => (
-                    <Card key={i}>
+                    <Card key={i} className="atlas-theme-card">
                         <CardContent className="p-0">
                              <Skeleton className="w-full h-64" />
                         </CardContent>
@@ -76,22 +63,24 @@ export default function AtlasPage() {
                     </Card>
                 ))}
             </div>
-        </div>
+        </ThemeBackground>
     );
   }
 
   return (
-    <div className={cn("flex flex-col p-6 rounded-lg transition-colors duration-500", backgroundClass)}>
+    <ThemeBackground key={activeCategory} className="flex flex-col p-6 rounded-lg atlas-theme-fade-in">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold font-headline">{pageTitle}</h1>
-        <p className="text-muted-foreground">
+        <ThemeTitle className="text-3xl mb-2">
+          {pageTitle}
+        </ThemeTitle>
+        <ThemeText variant="muted" className="text-base">
           {pageDescription}
-        </p>
+        </ThemeText>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentItems.map((item) => (
-            <Card key={item.id} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/80 backdrop-blur-sm">
+            <Card key={item.id} className="atlas-theme-card overflow-hidden group transition-all duration-300 hover:shadow-xl hover:scale-105 backdrop-blur-sm">
             <CardContent className="p-0">
                 <Image
                 src={item.imageUrl}
@@ -103,16 +92,20 @@ export default function AtlasPage() {
                 />
             </CardContent>
             <CardFooter className="flex-col items-start p-4 text-sm">
-                <p className="font-bold">{item.species}</p>
-                <p className="text-muted-foreground">{item.staining}</p>
-                <p className="text-muted-foreground text-xs">
-                {item.magnification} por {item.author}
-                </p>
+                <ThemeText className="font-bold text-sm">
+                  {item.species}
+                </ThemeText>
+                <ThemeText variant="muted" className="text-sm">
+                  {item.staining}
+                </ThemeText>
+                <ThemeText variant="muted" className="text-xs">
+                  {item.magnification} por {item.author}
+                </ThemeText>
             </CardFooter>
             </Card>
         ))}
       </div>
-    </div>
+    </ThemeBackground>
   );
 }
 
