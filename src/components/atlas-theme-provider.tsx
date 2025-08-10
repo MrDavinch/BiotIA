@@ -11,7 +11,13 @@ import {
   updateUrlHash,
   isValidCategory,
   persistThemeToSession,
-  getThemeWithFallback
+  getThemeWithFallback,
+  preloadThemeConfigurations,
+  getPreloadedTheme,
+  startThemeTransitionPerformanceMonitoring,
+  endThemeTransitionPerformanceMonitoring,
+  preloadLikelyThemes,
+  debouncedThemeChange
 } from '@/lib/atlas-theme';
 
 interface AtlasThemeContextType {
@@ -29,10 +35,25 @@ interface AtlasThemeProviderProps {
 export function AtlasThemeProvider({ children }: AtlasThemeProviderProps) {
   const [currentTheme, setCurrentTheme] = useState<AtlasTheme>(ATLAS_THEMES.general);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Preload themes on mount for instant switching
+  useEffect(() => {
+    preloadThemeConfigurations();
+  }, []);
 
-  // Safe theme setter with enhanced error handling and URL management
+  // Performance-optimized theme setter with transition management
   const safeSetTheme = useCallback((category: CategoryKey, updateUrl: boolean = true) => {
     try {
+      // Early return if already on the same theme to prevent unnecessary updates
+      if (currentTheme.category === category && !isTransitioning) {
+        return;
+      }
+      
+      const fromCategory = currentTheme.category;
+      
+      // Start performance monitoring
+      startThemeTransitionPerformanceMonitoring(fromCategory, category);
+      
       setIsTransitioning(true);
       
       // Validate category before proceeding
@@ -41,9 +62,15 @@ export function AtlasThemeProvider({ children }: AtlasThemeProviderProps) {
         category = 'general';
       }
       
-      const theme = getThemeByCategory(category);
+      // Use preloaded theme for better performance
+      const theme = getPreloadedTheme(category);
       
-      // Update CSS custom properties
+      // Add transition class to body for smooth animations
+      if (typeof document !== 'undefined') {
+        document.body.classList.add('atlas-theme-transitioning');
+      }
+      
+      // Update CSS custom properties with performance optimizations
       updateCSSProperties(theme);
       
       // Update React state
@@ -57,10 +84,13 @@ export function AtlasThemeProvider({ children }: AtlasThemeProviderProps) {
         updateUrlHash(category, true);
       }
       
+      // Preload likely next themes for better performance
+      preloadLikelyThemes(category);
+      
     } catch (error) {
       console.error('Theme update failed:', error);
       // Fallback to general theme on error
-      const fallbackTheme = ATLAS_THEMES.general;
+      const fallbackTheme = getPreloadedTheme('general');
       updateCSSProperties(fallbackTheme);
       setCurrentTheme(fallbackTheme);
       
@@ -69,10 +99,24 @@ export function AtlasThemeProvider({ children }: AtlasThemeProviderProps) {
         updateUrlHash('general', true);
       }
     } finally {
-      // Remove transition state after a short delay
-      setTimeout(() => setIsTransitioning(false), 100);
+      // Remove transition state and class after animation completes
+      setTimeout(() => {
+        setIsTransitioning(false);
+        if (typeof document !== 'undefined') {
+          document.body.classList.remove('atlas-theme-transitioning');
+          document.body.classList.add('atlas-theme-transition-complete');
+          
+          // Remove the completion class after a short delay to clean up
+          setTimeout(() => {
+            document.body.classList.remove('atlas-theme-transition-complete');
+          }, 100);
+        }
+        
+        // End performance monitoring
+        endThemeTransitionPerformanceMonitoring(category, currentTheme.category);
+      }, 500); // Match CSS transition duration
     }
-  }, []);
+  }, [currentTheme.category, isTransitioning]);
 
   // Initialize theme with fallback priority on mount
   useEffect(() => {
@@ -91,6 +135,49 @@ export function AtlasThemeProvider({ children }: AtlasThemeProviderProps) {
       setTimeout(initializeTheme, 50);
     }
   }, [safeSetTheme]);
+
+  // Monitor URL changes for theme updates (handles Next.js navigation)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    let lastUrl = window.location.href;
+
+    const checkForThemeUpdate = () => {
+      const currentUrl = window.location.href;
+      if (currentUrl !== lastUrl) {
+        lastUrl = currentUrl;
+        const urlCategory = getCategoryFromHash();
+        if (urlCategory !== currentTheme.category) {
+          console.debug('URL-based theme update detected:', {
+            from: currentTheme.category,
+            to: urlCategory,
+            url: currentUrl
+          });
+          safeSetTheme(urlCategory, false);
+        }
+      }
+    };
+
+    // Check immediately
+    checkForThemeUpdate();
+
+    // Use a more efficient approach with requestAnimationFrame
+    let animationFrameId: number;
+    const scheduleCheck = () => {
+      animationFrameId = requestAnimationFrame(() => {
+        checkForThemeUpdate();
+        scheduleCheck(); // Schedule next check
+      });
+    };
+
+    scheduleCheck();
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [currentTheme.category, safeSetTheme]);
 
   // Enhanced hash change listener for browser navigation
   useEffect(() => {
@@ -119,6 +206,18 @@ export function AtlasThemeProvider({ children }: AtlasThemeProviderProps) {
       console.debug('Atlas theme changed via browser back/forward:', category);
     };
 
+    // Handle route changes (for Next.js navigation)
+    const handleRouteChange = () => {
+      // Small delay to ensure the URL has been updated
+      setTimeout(() => {
+        const category = getCategoryFromHash();
+        if (category !== currentTheme.category) {
+          console.debug('Atlas theme changed via route navigation:', category);
+          safeSetTheme(category, false);
+        }
+      }, 10);
+    };
+
     if (typeof window !== 'undefined') {
       // Check hash immediately on mount
       const currentHash = window.location.hash;
@@ -133,16 +232,30 @@ export function AtlasThemeProvider({ children }: AtlasThemeProviderProps) {
       // Listen for popstate events (back/forward buttons)
       window.addEventListener('popstate', handlePopState);
       
+      // Listen for route changes (Next.js navigation)
+      window.addEventListener('popstate', handleRouteChange);
+      
+      // Also check for hash changes on focus (in case user navigated via address bar)
+      window.addEventListener('focus', handleRouteChange);
+      
       return () => {
         window.removeEventListener('hashchange', handleHashChange);
         window.removeEventListener('popstate', handlePopState);
+        window.removeEventListener('focus', handleRouteChange);
       };
     }
+  }, [safeSetTheme, currentTheme.category]);
+
+  // Debounced theme setter for rapid theme changes
+  const debouncedSetTheme = useCallback((category: CategoryKey, updateUrl: boolean = true) => {
+    debouncedThemeChange(category, (debouncedCategory) => {
+      safeSetTheme(debouncedCategory, updateUrl);
+    }, 50);
   }, [safeSetTheme]);
 
   const contextValue: AtlasThemeContextType = {
     currentTheme,
-    setTheme: safeSetTheme,
+    setTheme: debouncedSetTheme,
     isTransitioning,
   };
 

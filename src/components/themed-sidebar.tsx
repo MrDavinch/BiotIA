@@ -45,9 +45,18 @@ export function ThemedSidebar({ isAtlasOpen, setIsAtlasOpen, hash }: ThemedSideb
   const currentCategory = useCurrentCategory();
 
   // Handle Atlas link clicks
-  const handleAtlasLinkClick = (category: string) => {
+  const handleAtlasLinkClick = (category: string, event: React.MouseEvent) => {
     console.debug('Atlas link clicked:', category);
-    setTheme(category as any, true);
+    
+    // If we're already on the atlas page, just update the theme
+    if (pathname === '/atlas') {
+      event.preventDefault();
+      setTheme(category as any, true);
+    } else {
+      // If we're navigating to atlas page, let Next.js handle the navigation
+      // The theme will be updated by the hash change listener in the provider
+      setTheme(category as any, false); // Don't update URL, let Next.js handle it
+    }
   };
 
   return (
@@ -139,18 +148,18 @@ export function ThemedSidebar({ isAtlasOpen, setIsAtlasOpen, hash }: ThemedSideb
               {/* General Atlas link */}
               <Link 
                 href="/atlas#general"
-                onClick={() => handleAtlasLinkClick('general')}
+                onClick={(e) => handleAtlasLinkClick('general', e)}
                 className={cn(
                   'atlas-link atlas-link-principal transition-all duration-500',
                   { 
-                    'border-2 scale-105': (pathname === '/atlas' && (hash === '#general' || hash === '')),
-                    'atlas-theme-shadow': (pathname === '/atlas' && (hash === '#general' || hash === ''))
+                    'border-2 scale-105': currentCategory === 'general' && pathname === '/atlas',
+                    'atlas-theme-shadow': currentCategory === 'general' && pathname === '/atlas'
                   }
                 )}
               >
                 <div className="flex items-center justify-between">
                   <span>General</span>
-                  {(pathname === '/atlas' && (hash === '#general' || hash === '')) && (
+                  {currentCategory === 'general' && pathname === '/atlas' && (
                     <div className="w-2 h-2 rounded-full bg-white opacity-80" />
                   )}
                 </div>
@@ -158,37 +167,29 @@ export function ThemedSidebar({ isAtlasOpen, setIsAtlasOpen, hash }: ThemedSideb
               
               {/* Specialty Atlas links */}
               {atlasCategories.map(category => {
-                const isActive = hash === `#${category.key}`;
                 const isCurrentTheme = currentCategory === category.key;
                 
                 return (
                   <Link 
                     key={category.key} 
                     href={`/atlas#${category.key}`}
-                    onClick={() => handleAtlasLinkClick(category.key)}
+                    onClick={(e) => handleAtlasLinkClick(category.key, e)}
                     className={cn(
                       "atlas-link transition-all duration-500",
                       category.className,
                       { 
-                        'border-2 scale-105': isActive,
-                        'atlas-theme-shadow': isActive,
-                        'ring-2 ring-white/30': isCurrentTheme && isActive
+                        'border-2 scale-105': isCurrentTheme && pathname === '/atlas',
+                        'atlas-theme-shadow': isCurrentTheme && pathname === '/atlas',
+                        'ring-2 ring-white/30': isCurrentTheme && pathname === '/atlas'
                       }
                     )}
                   >
                     <div className="flex items-center justify-between">
                       <span>{category.name}</span>
                       <div className="flex items-center gap-1">
-                        {/* Active indicator */}
-                        {isActive && (
+                        {/* Single unified indicator - only show when this is the current theme */}
+                        {isCurrentTheme && pathname === '/atlas' && (
                           <div className="w-2 h-2 rounded-full bg-white opacity-80" />
-                        )}
-                        {/* Theme indicator */}
-                        {isCurrentTheme && (
-                          <div 
-                            className="w-1.5 h-1.5 rounded-full border border-white/50"
-                            style={{ backgroundColor: currentTheme.colors.primary }}
-                          />
                         )}
                       </div>
                     </div>

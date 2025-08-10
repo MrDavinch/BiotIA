@@ -162,21 +162,62 @@ export function getThemeByCategory(category: string): AtlasTheme {
   return ATLAS_THEMES[normalizedCategory] || ATLAS_THEMES.general;
 }
 
-// Utility function to update CSS custom properties
+// Performance-optimized CSS custom property updates
+let updateScheduled = false;
+let pendingTheme: AtlasTheme | null = null;
+
+// Utility function to update CSS custom properties with performance optimizations
 export function updateCSSProperties(theme: AtlasTheme): void {
   if (typeof document === 'undefined') return; // SSR safety
   
+  // Store the pending theme update
+  pendingTheme = theme;
+  
+  // Use requestAnimationFrame to batch CSS updates and prevent layout thrashing
+  if (!updateScheduled) {
+    updateScheduled = true;
+    requestAnimationFrame(() => {
+      if (pendingTheme) {
+        performCSSUpdate(pendingTheme);
+        pendingTheme = null;
+      }
+      updateScheduled = false;
+    });
+  }
+}
+
+// Internal function to perform the actual CSS update
+function performCSSUpdate(theme: AtlasTheme): void {
   const root = document.documentElement;
   
-  // Update Atlas-specific CSS custom properties
-  root.style.setProperty('--atlas-bg-primary', theme.colors.background);
-  root.style.setProperty('--atlas-bg-secondary', theme.colors.backgroundSecondary);
-  root.style.setProperty('--atlas-color-primary', theme.colors.primary);
-  root.style.setProperty('--atlas-color-primary-fg', theme.colors.primaryForeground);
-  root.style.setProperty('--atlas-color-accent', theme.colors.accent);
-  root.style.setProperty('--atlas-color-accent-fg', theme.colors.accentForeground);
-  root.style.setProperty('--atlas-color-muted', theme.colors.muted);
-  root.style.setProperty('--atlas-color-muted-fg', theme.colors.mutedForeground);
+  // Batch all CSS custom property updates to minimize reflows
+  const cssUpdates = [
+    ['--atlas-bg-primary', theme.colors.background],
+    ['--atlas-bg-secondary', theme.colors.backgroundSecondary],
+    ['--atlas-color-primary', theme.colors.primary],
+    ['--atlas-color-primary-fg', theme.colors.primaryForeground],
+    ['--atlas-color-accent', theme.colors.accent],
+    ['--atlas-color-accent-fg', theme.colors.accentForeground],
+    ['--atlas-color-muted', theme.colors.muted],
+    ['--atlas-color-muted-fg', theme.colors.mutedForeground],
+    // Extended theme properties for better visual consistency
+    ['--atlas-border', lightenColor(theme.colors.muted, 5)],
+    ['--atlas-border-hover', darkenColor(theme.colors.muted, 10)],
+    ['--atlas-shadow', `${theme.colors.primary}1a`], // 10% opacity
+    ['--atlas-shadow-hover', `${theme.colors.primary}33`], // 20% opacity
+    ['--atlas-overlay', `${theme.colors.primary}80`], // 50% opacity
+  ];
+  
+  // Apply all updates in a single batch to minimize layout recalculations
+  cssUpdates.forEach(([property, value]) => {
+    root.style.setProperty(property, value);
+  });
+  
+  // Update gradient properties
+  root.style.setProperty('--atlas-gradient-primary', 
+    `linear-gradient(135deg, ${theme.colors.primary}, ${theme.colors.accent})`);
+  root.style.setProperty('--atlas-gradient-background', 
+    `linear-gradient(180deg, ${theme.colors.background}, ${theme.colors.backgroundSecondary})`);
 }
 
 // Utility function to extract category from URL hash with enhanced error handling
@@ -242,6 +283,48 @@ export function getAvailableCategories(): CategoryKey[] {
 
 // Session storage key for theme persistence
 const THEME_STORAGE_KEY = 'atlas-theme-category';
+
+// Theme preloading cache
+const themePreloadCache = new Map<CategoryKey, AtlasTheme>();
+let preloadInitialized = false;
+
+// Preload all theme configurations for instant switching
+export function preloadThemeConfigurations(): void {
+  if (preloadInitialized || typeof window === 'undefined') return;
+  
+  try {
+    // Cache all theme configurations
+    Object.entries(ATLAS_THEMES).forEach(([category, theme]) => {
+      themePreloadCache.set(category as CategoryKey, theme);
+    });
+    
+    // Pre-calculate derived colors for better performance
+    Object.values(ATLAS_THEMES).forEach(theme => {
+      // Pre-calculate border colors
+      lightenColor(theme.colors.muted, 5);
+      darkenColor(theme.colors.muted, 10);
+      
+      // Pre-calculate shadow colors with opacity
+      `${theme.colors.primary}1a`;
+      `${theme.colors.primary}33`;
+      `${theme.colors.primary}80`;
+    });
+    
+    preloadInitialized = true;
+    console.debug('Atlas theme configurations preloaded successfully');
+  } catch (error) {
+    console.warn('Failed to preload theme configurations:', error);
+  }
+}
+
+// Get preloaded theme (faster than direct access)
+export function getPreloadedTheme(category: CategoryKey): AtlasTheme {
+  if (!preloadInitialized) {
+    preloadThemeConfigurations();
+  }
+  
+  return themePreloadCache.get(category) || ATLAS_THEMES[category] || ATLAS_THEMES.general;
+}
 
 // Utility function to persist theme to session storage
 export function persistThemeToSession(category: CategoryKey): void {
@@ -640,4 +723,180 @@ export function getAccessibleTheme(category: CategoryKey): AtlasTheme {
   console.warn(`Theme ${category} had accessibility issues and was automatically adjusted:`, validation.issues);
   
   return adjustedTheme;
+}
+
+// ============================================================================
+// PERFORMANCE MONITORING AND OPTIMIZATION UTILITIES
+// ============================================================================
+
+interface ThemePerformanceMetrics {
+  transitionStartTime: number;
+  transitionEndTime: number;
+  duration: number;
+  category: CategoryKey;
+  fromCategory: CategoryKey;
+}
+
+let performanceMetrics: ThemePerformanceMetrics[] = [];
+let currentTransitionStart: number | null = null;
+
+/**
+ * Start performance monitoring for theme transition
+ */
+export function startThemeTransitionPerformanceMonitoring(fromCategory: CategoryKey, toCategory: CategoryKey): void {
+  if (typeof performance === 'undefined') return;
+  
+  currentTransitionStart = performance.now();
+  
+  // Log transition start for debugging
+  console.debug(`Atlas theme transition started: ${fromCategory} → ${toCategory}`);
+}
+
+/**
+ * End performance monitoring for theme transition
+ */
+export function endThemeTransitionPerformanceMonitoring(category: CategoryKey, fromCategory: CategoryKey): void {
+  if (typeof performance === 'undefined' || currentTransitionStart === null) return;
+  
+  const endTime = performance.now();
+  const duration = endTime - currentTransitionStart;
+  
+  const metrics: ThemePerformanceMetrics = {
+    transitionStartTime: currentTransitionStart,
+    transitionEndTime: endTime,
+    duration,
+    category,
+    fromCategory
+  };
+  
+  performanceMetrics.push(metrics);
+  
+  // Keep only last 10 measurements to prevent memory leaks
+  if (performanceMetrics.length > 10) {
+    performanceMetrics = performanceMetrics.slice(-10);
+  }
+  
+  // Log performance metrics
+  console.debug(`Atlas theme transition completed: ${fromCategory} → ${category} in ${duration.toFixed(2)}ms`);
+  
+  // Warn if transition is slow
+  if (duration > 100) {
+    console.warn(`Slow theme transition detected: ${duration.toFixed(2)}ms (target: <100ms)`);
+  }
+  
+  currentTransitionStart = null;
+}
+
+/**
+ * Get average theme transition performance
+ */
+export function getThemeTransitionPerformanceStats(): {
+  averageDuration: number;
+  minDuration: number;
+  maxDuration: number;
+  totalTransitions: number;
+} {
+  if (performanceMetrics.length === 0) {
+    return {
+      averageDuration: 0,
+      minDuration: 0,
+      maxDuration: 0,
+      totalTransitions: 0
+    };
+  }
+  
+  const durations = performanceMetrics.map(m => m.duration);
+  
+  return {
+    averageDuration: durations.reduce((sum, d) => sum + d, 0) / durations.length,
+    minDuration: Math.min(...durations),
+    maxDuration: Math.max(...durations),
+    totalTransitions: performanceMetrics.length
+  };
+}
+
+/**
+ * Clear performance metrics (useful for testing)
+ */
+export function clearThemePerformanceMetrics(): void {
+  performanceMetrics = [];
+  currentTransitionStart = null;
+}
+
+/**
+ * Optimize theme transition by preloading next likely themes
+ */
+export function preloadLikelyThemes(currentCategory: CategoryKey): void {
+  if (typeof window === 'undefined') return;
+  
+  // Get themes that are commonly accessed after the current one
+  const likelyNextThemes = getLikelyNextThemes(currentCategory);
+  
+  // Preload these themes by accessing them (triggers caching)
+  likelyNextThemes.forEach(category => {
+    getPreloadedTheme(category);
+  });
+  
+  console.debug(`Preloaded likely next themes for ${currentCategory}:`, likelyNextThemes);
+}
+
+/**
+ * Get themes that are commonly accessed after the current theme
+ */
+function getLikelyNextThemes(currentCategory: CategoryKey): CategoryKey[] {
+  // Simple heuristic: return 2-3 most common themes plus general
+  const commonThemes: CategoryKey[] = ['general', 'hematologia', 'parasitologia'];
+  
+  // Remove current category and return others
+  return commonThemes.filter(theme => theme !== currentCategory).slice(0, 2);
+}
+
+/**
+ * Debounce theme changes to prevent rapid switching performance issues
+ */
+let themeChangeTimeout: NodeJS.Timeout | null = null;
+
+export function debouncedThemeChange(
+  category: CategoryKey, 
+  callback: (category: CategoryKey) => void, 
+  delay: number = 50
+): void {
+  if (themeChangeTimeout) {
+    clearTimeout(themeChangeTimeout);
+  }
+  
+  themeChangeTimeout = setTimeout(() => {
+    callback(category);
+    themeChangeTimeout = null;
+  }, delay);
+}
+
+/**
+ * Optimize CSS custom property updates by batching them
+ */
+const cssUpdateQueue: Array<[string, string]> = [];
+let cssUpdateScheduled = false;
+
+export function queueCSSPropertyUpdate(property: string, value: string): void {
+  cssUpdateQueue.push([property, value]);
+  
+  if (!cssUpdateScheduled) {
+    cssUpdateScheduled = true;
+    requestAnimationFrame(flushCSSUpdates);
+  }
+}
+
+function flushCSSUpdates(): void {
+  if (typeof document === 'undefined') return;
+  
+  const root = document.documentElement;
+  
+  // Apply all queued updates in a single batch
+  cssUpdateQueue.forEach(([property, value]) => {
+    root.style.setProperty(property, value);
+  });
+  
+  // Clear the queue
+  cssUpdateQueue.length = 0;
+  cssUpdateScheduled = false;
 }

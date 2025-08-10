@@ -52,11 +52,13 @@
     --atlas-gradient-primary: linear-gradient(135deg, var(--atlas-color-primary), var(--atlas-color-accent));
     --atlas-gradient-background: linear-gradient(180deg, var(--atlas-bg-primary), var(--atlas-bg-secondary));
 
-    /* Transition timing and easing for smooth theme changes */
+    /* Professional transition timing and easing curves */
     --atlas-transition-duration: 500ms;
-    --atlas-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+    --atlas-transition-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Professional ease-out-quad */
     --atlas-transition-fast: 200ms;
     --atlas-transition-slow: 800ms;
+    --atlas-transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Subtle bounce */
+    --atlas-transition-smooth: cubic-bezier(0.23, 1, 0.32, 1); /* Smooth ease-out-expo */
   }
 
   .dark {
@@ -142,41 +144,58 @@
     @apply text-black;
   }
 
-  /* Atlas Theme-Aware Background Components */
+  /* Performance-optimized Atlas Theme-Aware Background Components */
   .atlas-theme-background {
     background-color: var(--atlas-bg-primary);
     transition: background-color var(--atlas-transition-duration) var(--atlas-transition-timing);
+    /* Use transform3d to enable hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    /* Optimize for color changes */
+    will-change: background-color;
   }
 
   .atlas-theme-background-secondary {
     background-color: var(--atlas-bg-secondary);
     transition: background-color var(--atlas-transition-duration) var(--atlas-transition-timing);
+    transform: translate3d(0, 0, 0);
+    will-change: background-color;
   }
 
   .atlas-theme-background-gradient {
     background: var(--atlas-gradient-background);
     transition: background var(--atlas-transition-duration) var(--atlas-transition-timing);
+    transform: translate3d(0, 0, 0);
+    will-change: background;
   }
 
-  /* Atlas Theme-Aware Text Components */
+  /* Performance-optimized Atlas Theme-Aware Text Components */
   .atlas-theme-title {
     color: var(--atlas-color-primary);
-    transition: color var(--atlas-transition-duration) var(--atlas-transition-timing);
+    transition: color var(--atlas-transition-duration) var(--atlas-transition-smooth);
+    /* Optimize text rendering during transitions */
+    text-rendering: optimizeSpeed;
+    will-change: color;
   }
 
   .atlas-theme-text {
     color: var(--atlas-color-primary);
-    transition: color var(--atlas-transition-duration) var(--atlas-transition-timing);
+    transition: color var(--atlas-transition-duration) var(--atlas-transition-smooth);
+    text-rendering: optimizeSpeed;
+    will-change: color;
   }
 
   .atlas-theme-accent {
     color: var(--atlas-color-accent);
-    transition: color var(--atlas-transition-duration) var(--atlas-transition-timing);
+    transition: color var(--atlas-transition-duration) var(--atlas-transition-smooth);
+    text-rendering: optimizeSpeed;
+    will-change: color;
   }
 
   .atlas-theme-muted {
     color: var(--atlas-color-muted-fg);
-    transition: color var(--atlas-transition-duration) var(--atlas-transition-timing);
+    transition: color var(--atlas-transition-duration) var(--atlas-transition-smooth);
+    text-rendering: optimizeSpeed;
+    will-change: color;
   }
 
   /* Atlas Theme-Aware Border and Shadow Components */
@@ -198,25 +217,31 @@
     box-shadow: 0 10px 15px -3px var(--atlas-shadow-hover), 0 4px 6px -2px var(--atlas-shadow-hover);
   }
 
-  /* Atlas Theme-Aware Interactive Components */
+  /* Performance-optimized Atlas Theme-Aware Interactive Components */
   .atlas-theme-button {
     background-color: var(--atlas-color-primary);
     color: var(--atlas-color-primary-fg);
     border: 1px solid var(--atlas-color-primary);
-    transition: all var(--atlas-transition-fast) var(--atlas-transition-timing);
+    transition: all var(--atlas-transition-fast) var(--atlas-transition-bounce);
+    /* Enable hardware acceleration for smooth interactions */
+    transform: translate3d(0, 0, 0);
+    will-change: transform, background-color, border-color, box-shadow;
+    /* Optimize for frequent interactions */
+    backface-visibility: hidden;
   }
 
   .atlas-theme-button:hover {
     background-color: var(--atlas-color-accent);
     color: var(--atlas-color-accent-fg);
     border-color: var(--atlas-color-accent);
-    transform: translateY(-1px);
+    transform: translate3d(0, -1px, 0);
     box-shadow: 0 4px 8px var(--atlas-shadow-hover);
   }
 
   .atlas-theme-button:active {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
     box-shadow: 0 2px 4px var(--atlas-shadow);
+    transition-duration: var(--atlas-transition-fast);
   }
 
   /* Enhanced Atlas Link Styles with Theme Integration */
@@ -247,30 +272,7 @@
     left: 100%;
   }
 
-  .atlas-theme-card {
-    background-color: var(--atlas-bg-secondary);
-    border: 1px solid var(--atlas-border);
-    box-shadow: 0 2px 4px var(--atlas-shadow);
-    transition: all var(--atlas-transition-fast) var(--atlas-transition-timing);
-  }
 
-  .atlas-theme-card:hover {
-    border-color: var(--atlas-border-hover);
-    box-shadow: 0 8px 16px var(--atlas-shadow-hover);
-    transform: translateY(-2px);
-  }
-
-  .atlas-theme-link {
-    color: var(--atlas-color-primary);
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition: all var(--atlas-transition-fast) var(--atlas-transition-timing);
-  }
-
-  .atlas-theme-link:hover {
-    color: var(--atlas-color-accent);
-    text-decoration-color: var(--atlas-color-accent);
-  }
 
   /* Atlas Theme Transition Animations */
   .atlas-theme-fade-in {
@@ -403,4 +405,89 @@
 
 .atlas-theme-bounce {
   animation: atlasThemeBounce 1s ease-in-out;
+}
+
+/* Performance-optimized theme transition states */
+.atlas-theme-transitioning {
+  /* Prevent layout thrashing during theme transitions */
+  contain: layout style paint;
+}
+
+.atlas-theme-transitioning * {
+  /* Optimize all elements during transition */
+  will-change: color, background-color, border-color, box-shadow;
+  /* Use hardware acceleration */
+  transform: translate3d(0, 0, 0);
+  /* Prevent subpixel rendering issues */
+  backface-visibility: hidden;
+}
+
+/* Remove will-change after transition completes to free up resources */
+.atlas-theme-transition-complete * {
+  will-change: auto;
+}
+
+/* Professional theme transition effects */
+.atlas-theme-fade-transition {
+  transition: opacity var(--atlas-transition-duration) var(--atlas-transition-smooth);
+}
+
+.atlas-theme-scale-transition {
+  transition: transform var(--atlas-transition-duration) var(--atlas-transition-bounce);
+}
+
+.atlas-theme-slide-transition {
+  transition: transform var(--atlas-transition-duration) var(--atlas-transition-smooth);
+}
+
+/* Optimized card transitions */
+.atlas-theme-card {
+  background-color: var(--atlas-bg-secondary);
+  border: 1px solid var(--atlas-border);
+  box-shadow: 0 2px 4px var(--atlas-shadow);
+  transition: all var(--atlas-transition-fast) var(--atlas-transition-smooth);
+  /* Enable hardware acceleration */
+  transform: translate3d(0, 0, 0);
+  will-change: transform, box-shadow, border-color;
+  /* Optimize for frequent updates */
+  contain: layout style;
+}
+
+.atlas-theme-card:hover {
+  border-color: var(--atlas-border-hover);
+  box-shadow: 0 8px 16px var(--atlas-shadow-hover);
+  transform: translate3d(0, -2px, 0);
+}
+
+/* Optimized link transitions */
+.atlas-theme-link {
+  color: var(--atlas-color-primary);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: all var(--atlas-transition-fast) var(--atlas-transition-smooth);
+  will-change: color, text-decoration-color;
+}
+
+.atlas-theme-link:hover {
+  color: var(--atlas-color-accent);
+  text-decoration-color: var(--atlas-color-accent);
+}
+
+/* Performance optimization for theme-aware elements */
+.atlas-theme-optimized {
+  /* Enable hardware acceleration */
+  transform: translate3d(0, 0, 0);
+  /* Optimize for color changes */
+  will-change: color, background-color;
+  /* Prevent layout recalculations */
+  contain: layout style;
+}
+
+/* Smooth theme transition for entire page */
+.atlas-page-transition {
+  transition: all var(--atlas-transition-duration) var(--atlas-transition-smooth);
+  /* Enable hardware acceleration for page-level transitions */
+  transform: translate3d(0, 0, 0);
+  /* Optimize for large-scale changes */
+  contain: layout style paint;
 }
