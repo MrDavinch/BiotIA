@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { AtlasThemeProvider } from '@/components/atlas-theme-provider';
+import { AtlasThemeProvider, useAtlasTheme } from '@/components/atlas-theme-provider';
 import {
   Bell,
   Home,
@@ -30,11 +30,13 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { BiotiaLogo } from '@/components/biotia-logo';
 import { ThemedSidebar } from '@/components/themed-sidebar';
+import { Footer } from '@/components/footer';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 // Main layout content component that consumes theme context
 function MainLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { currentTheme } = useAtlasTheme();
   const [isAtlasOpen, setIsAtlasOpen] = React.useState(false);
   const [hash, setHash] = React.useState('');
 
@@ -64,15 +66,33 @@ function MainLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       {/* Desktop Sidebar */}
-      <div className="hidden border-r bg-card md:block transition-colors duration-500">
+      <div className={cn(
+        "hidden border-r md:block transition-colors duration-500",
+        pathname.startsWith('/atlas') 
+          ? "atlas-theme-background-secondary" 
+          : "bg-card"
+      )}
+      style={pathname.startsWith('/atlas') ? {
+        backgroundColor: currentTheme.colors.backgroundSecondary
+      } : undefined}
+      >
         <ThemedSidebar 
           isAtlasOpen={isAtlasOpen}
           setIsAtlasOpen={setIsAtlasOpen}
           hash={hash}
         />
       </div>
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+      <div className="flex flex-col min-h-screen">
+        <header className={cn(
+          "flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 transition-colors duration-500",
+          pathname.startsWith('/atlas') 
+            ? "atlas-theme-background-secondary" 
+            : "bg-card"
+        )}
+        style={pathname.startsWith('/atlas') ? {
+          backgroundColor: currentTheme.colors.backgroundSecondary
+        } : undefined}
+        >
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -112,9 +132,20 @@ function MainLayoutContent({ children }: { children: React.ReactNode }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-background">
+        <main 
+          className={cn(
+            "flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 transition-colors duration-500",
+            pathname.startsWith('/atlas') 
+              ? "atlas-theme-background" 
+              : "bg-background"
+          )}
+          style={pathname.startsWith('/atlas') ? {
+            backgroundColor: currentTheme.colors.background
+          } : undefined}
+        >
           {children}
         </main>
+        <Footer />
       </div>
     </div>
   );
